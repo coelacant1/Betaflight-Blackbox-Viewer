@@ -13,4 +13,8 @@ Overlays FFT or original signals over FPV footage with Python and OpenCV
   > conda install -c plotly plotly
 
 # Running
-Change filenames accordingly for CSV file and video footage. To scrub through video with live data calculation use the Displayer, with "python displayer.py" To render all frames to single video use Display Exporter with "python displayExporter.py"
+Change filenames accordingly for CSV file and video footage. To scrub through video with live data calculation use the Displayer, with:
+> python displayer.py
+
+To render all frames to single video use Display Exporter with: 
+> python displayExporter.py

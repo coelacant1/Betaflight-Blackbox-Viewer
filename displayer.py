@@ -7,11 +7,36 @@ import plotly.graph_objs as go
 import plotly.io as pio
 import io
 from scipy.fftpack import fftfreq, fft
+from pylab import *
+import scipy.signal as signal
 from PIL import *
 
 from plotly.offline import *
 
-filename = 'RC_VID_0020.mp4'
+
+
+n = 101
+gyroXFIR = signal.firwin(n, cutoff = 0.1, window = "hanning", pass_zero=False)
+gyroYFIR = signal.firwin(n, cutoff = 0.1, window = "hanning", pass_zero=False)
+gyroZFIR = signal.firwin(n, cutoff = 0.1, window = "hanning", pass_zero=False)
+
+w, h = signal.freqz(gyroXFIR)
+
+fig = plt.figure()
+plt.title('Digital filter frequency response')
+ax1 = fig.add_subplot(111)
+plt.plot(w, 20 * np.log10(abs(h)), 'b')
+plt.ylabel('Amplitude [dB]', color='b')
+plt.xlabel('Frequency [rad/sample]')
+ax2 = ax1.twinx()
+angles = np.unwrap(np.angle(h))
+plt.plot(w, angles, 'g')
+plt.ylabel('Angle (radians)', color='g')
+plt.grid()
+plt.axis('tight')
+plt.show()
+
+filename = 'C:/Users/Rollie/Desktop/Betaflight Python Displayer/RC_VID_0020.mp4'
 cap = cv2.VideoCapture(filename)
 
 # Check if camera opened successfully
@@ -120,6 +145,12 @@ def generateFFTImage(arr,names, title):
 
     return generateImage(arr,names, title)
 
+def filterGyros(arr):
+    arr[0] = convolve(arr[0],gyroXFIR, mode='same')
+    arr[1] = convolve(arr[1],gyroYFIR, mode='same')
+    arr[2] = convolve(arr[2],gyroZFIR, mode='same')
+
+    return arr
 
 
 def onChange(trackbarValue):
